@@ -112,25 +112,26 @@ options(java.parameters = "-Xmx10000m")
 # PARAMETERS TO SET MANUALLY                            		 
 
 # Set file locations				
-	sampledir <- "/home/mpiage/data/2020_bisphenols/"
-  setwd(sampledir)
-	outputdir <- paste(sampledir, "./DEG_output/", sep="")
-	if(!dir.exists(outputdir)) {dir.create(outputdir)}
+sampledir <- "/home/mpiage/data/2020_bisphenols/"
+setwd(sampledir)
+outputdir <- paste(sampledir, "./DEG_output/", sep="")
+if(!dir.exists(outputdir)) {dir.create(outputdir)}
 # Names of files to load
-	SampleDataFile <- "./biospyder/count_table.csv" # "genes.data.tsv" #This tab delimited file contains the merged RSEM.genes.results files
-	SampleKeyFile <- "metadata.txt" #This tab delimited file contains at least 2 columns: NAME (sample names identical to the column names of sampleData) and Compound (needs to identify to which group the sample belongs -> ExperimentalGroup & ControlGroup)
-	ContrastsFile <- "contrasts.txt" #This tab delimited file contains one row per contrast, with the control for comparison in the right column and the comparison in the left column
+SampleDataFile <- "./biospyder/count_table.csv" # "genes.data.tsv" #This tab delimited file contains the merged RSEM.genes.results files
+SampleKeyFile <- "metadata.txt" #This tab delimited file contains at least 2 columns: NAME (sample names identical to the column names of sampleData) and Compound (needs to identify to which group the sample belongs -> ExperimentalGroup & ControlGroup)
+ContrastsFile <- "contrasts.txt" #This tab delimited file contains one row per contrast, with the control for comparison in the right column and the comparison in the left column
 # Specify which groups need to be compared 
-	contrasts <- read.delim(ContrastsFile, stringsAsFactors=FALSE, sep="\t", header=FALSE,  quote="\"")
-	short_contrast_names <- paste(contrasts$V1) # Customize these for your experiment... Must be short enough to fit as Excel tab titles.
-	intgroup <- DESIGN <- "group"	#Column name which defines the groups to be compared
-  nBestFeatures <- 20 # The number of best features to make plots of their counts
-  nBest <- 100 # Number of features to include in table and limiting PCA/clustering analysis
-  nHeatmap <- 50 # Number of genes for heatmap
+contrasts <- read.delim(ContrastsFile, stringsAsFactors=FALSE, sep="\t", header=FALSE,  quote="\"")
+short_contrast_names <- paste(contrasts$V1) # Customize these for your experiment... Must be short enough to fit as Excel tab titles.
+DESIGN <- "group"	#Column name which defines the groups to be compared
+intgroup <- DESIGN # May want to make this include more columns instead, for plotting PCA etc.
+nBestFeatures <- 20 # The number of best features to make plots of their counts
+nBest <- 100 # Number of features to include in table and limiting PCA/clustering analysis
+nHeatmap <- 50 # Number of genes for heatmap
 # Set analysis ID. This ID will be used as prefix for the output files
-	analysisID <-"2020_bisphenols"
+analysisID <-"2020_bisphenols"
 # Specify used platform/technology for data generation:
-	Platform <- "TempO-Seq" # Specify "RNA-Seq" or "TempO-seq"
+Platform <- "TempO-Seq" # Specify "RNA-Seq" or "TempO-seq"
 
 # Misc parameters
 	digits = 2 # For rounding numbers
