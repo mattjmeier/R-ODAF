@@ -62,7 +62,7 @@ message("If this text is visible by default, this report was produced to test pl
 startTime <- Sys.time()
 
 ## Set libPaths
-.libPaths(c("/home/mpiage/R/x86_64-pc-linux-gnu-library/3.6",.libPaths()))
+#.libPaths(c("~/shared/R/x86_64-pc-linux-gnu-library/3.6",.libPaths()))
 
 ## Bioconductor
 library('DESeq2')
@@ -112,7 +112,7 @@ options(java.parameters = "-Xmx10000m")
 # PARAMETERS TO SET MANUALLY                            		 
 
 # Set file locations				
-sampledir <- "/home/mpiage/data/2020_bisphenols/"
+sampledir <- "~/shared/data/2020_bisphenols/"
 setwd(sampledir)
 outputdir <- paste(sampledir, "./DEG_output/", sep="")
 if(!dir.exists(outputdir)) {dir.create(outputdir)}
@@ -485,10 +485,10 @@ for (i in 1:length(resList)) {
 # Write dataframe of all results
 # Significant only
 sigtabList <- sigtabList[!sapply(sigtabList, is.null)]
-significantResults <- do.call(rbind, sigtabList)
+significantResults <- rbindlist(sigtabList)
 significantResults <- dplyr::distinct(significantResults)
 # All results including non-significant
-allResults <- do.call(rbind, alltablList)
+allResults <- rbindlist(alltablList)
 
 
 
@@ -986,20 +986,34 @@ mat_top <- mat - rowMeans(mat)
 #          breaks = mat_breaks)
 
 heatmap_df <- as.data.frame(colData(rld)[,c("chemical","dose","original_names")]) # Customize!
-pheatmap(mat,
-         annotation_col=heatmap_df,
-         show_rownames = FALSE,
-         border_color = NA,
-         scale="row")
+
+heatmap_df <- dplyr::mutate(heatmap_df, dose=as.factor(dose))
+row.names(heatmap_df) <- heatmap_df$original_names
+# pheatmap(mat,
+#          annotation_col=heatmap_df,
+#          show_rownames = FALSE,
+#          border_color = NA,
+#          scale="row")
 # color = inferno(10)
 
 
-chems=unique(DESeqDesign$chemical)
+
+chems <- DESeqDesign[which(!DESeqDesign$chemical %in% c("Estradiol",
+                                                        "No Cells; Brain +ve control",
+                                                        "No cells; Universal human +ve control",
+                                                        "cells, no treatment",
+                                                        "Dex")),] %>%
+  select(chemical) %>%
+  distinct() %>%
+  pull(chemical)
 # plot_list=list()
+
+pdf(file="./heatmaps.bisphenols.pdf")
 for (chem in chems){
 
-
-samples_for_heatmap <- DESeqDesign[which(DESeqDesign$chemical %in% c(chem, "DMSO 0.1%")),]$original_names
+samples_for_heatmap <- DESeqDesign[which(DESeqDesign$chemical %in% c(chem, "DMSO 0.1%")),] %>%
+  dplyr::arrange(dose) %>%
+  dplyr::pull(original_names)
 mat_subset <- mat[,samples_for_heatmap]
 
 genes_for_heatmap_subset <- row.names(mat_subset)
@@ -1010,27 +1024,25 @@ genes_for_heatmap_subset <- data.frame(ensembl_gene_id=row.names(mat_subset)) %>
 genes_for_heatmap_subset$external_gene_name[is.na(genes_for_heatmap_subset$external_gene_name)]  <- genes_for_heatmap_subset$ensembl_gene_id[is.na(genes_for_heatmap_subset$external_gene_name)]  
 row.names(genes_for_heatmap_subset) <- genes_for_heatmap_subset$ensembl_gene_id
 
-# pheatmap(mat_subset,
-#          #color = rev(brewer.pal(11,"RdBu")), # inferno(10),
-#          annotation_col=dplyr::select(heatmap_df,-original_names),
-#          labels_row=genes_for_heatmap_subset[,2],
-#          border_color = NA,
-#          scale = "row",
-#          cutree_rows = 3,
-#          cutree_cols = 4)
-
 mat_subset_ordered <- mat_subset[,dplyr::arrange(heatmap_df[which(heatmap_df$original_names %in% samples_for_heatmap), ],dose)$original_names]
-
+row.names(mat_subset_ordered) <- stringr::str_replace(string = row.names(mat_subset_ordered),
+                                         pattern = "_.*",
+                                         replacement = "")
+genes_for_heatmap_subset[,2] <- stringr::str_replace(string = genes_for_heatmap_subset[,2],
+                                         pattern = "_.*",
+                                         replacement = "")
 # No clustering on columns
 pheatmap(mat_subset_ordered,
          #color = rev(brewer.pal(11,"RdBu")), # inferno(10),
          annotation_col=dplyr::select(heatmap_df,-original_names),
          cluster_cols = F,
          labels_row=genes_for_heatmap_subset[,2],
+         show_colnames = F,
          border_color = NA,
          scale = "row",
          cutree_rows = 3,
-         cutree_cols = 4)
+         cutree_cols = 4,
+         fontsize=8)
 
 # x=pheatmap(mat,
 #            annotation_col=heatmap_df,
