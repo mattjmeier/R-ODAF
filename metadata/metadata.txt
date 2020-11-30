@@ -1,0 +1,19 @@
+name	dose	treatment	replicate	group
+5_um_5adC_rep_3	5	5adC	rep2	5 5adC
+5_um_5adC_rep_1	5	5adC	rep1	5 5adC
+Vehicle_rep1	0	Vehicle	rep1	0 Vehicle
+1_um_5adC_rep_3	1	5adC	rep3	1 5adC
+human_reference_RNA_rep2	0	human reference RNA	rep2	0 human reference RNA
+Vehicle_rep3	0	Vehicle	rep3	0 Vehicle
+Naive_rep2	0	Naive	rep2	0 Naive
+Naive_rep1	0	Naive	rep1	0 Naive
+human_reference_RNA_rep1	0	human reference RNA	rep1	0 human reference RNA
+5_um_5adC_rep_4	5	5adC	rep4	5 5adC
+Naive_rep3	0	Naive	rep3	0 Naive
+1_um_5adC_rep_1	1	5adC	rep1	1 5adC
+1_um_5adC_rep_4	1	5adC	rep4	1 5adC
+5_um_5adC_rep_2	5	5adC	rep2	5 5adC
+Vehicle_rep2	0	Vehicle	rep2	0 Vehicle
+Vehicle_rep4	0	Vehicle	rep4	0 Vehicle
+1_um_5adC_rep_2	1	5adC	rep2	1 5adC
+Naive_rep4	0	Naive	rep4	0 Naive

@@ -1,0 +1,5 @@
+1 5adC	0 Naive
+5 5adC	0 Naive
+1 5adC	0 Vehicle
+5 5adC	0 Vehicle
+0 Vehicle	0 Naive
